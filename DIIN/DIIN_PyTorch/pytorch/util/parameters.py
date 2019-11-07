@@ -205,7 +205,7 @@ def load_parameters():
         "training_snli": "drive/My Drive/CSCI544 Project/NLP Project/snli_1.0/snli_1.0_train.jsonl",
         "dev_snli": "drive/My Drive/CSCI544 Project/NLP Project/snli_1.0/snli_1.0_dev.jsonl".format(args.datapath),
         "test_snli": "drive/My Drive/CSCI544 Project/NLP Project/snli_1.0/snli_1.0_test.jsonl".format(args.datapath),
-        "embedding_data_path": "{}/glove.840B.300d.txt".format(args.datapath),
+        "embedding_data_path": "drive/My Drive/CSCI544 Project/NLP Project/glove.840B.300d.txt".format(args.datapath),
         "log_path": "{}/{}".format(args.logpath, args.model_name),
         "ckpt_path":  "{}/{}".format(args.ckptpath, args.model_name),
         "embeddings_to_load": args.emb_to_load,
