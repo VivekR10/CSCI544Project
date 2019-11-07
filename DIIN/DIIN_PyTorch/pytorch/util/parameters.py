@@ -37,7 +37,7 @@ pa("model_name", type=str, default="demo_testing_SNLI", help="Give model name, t
 pa("--cuda", action='store_true', help="cuda")
 pa("--diff_loss", action='store_true', help="diff_loss")
 
-pa("--datapath", type=str, default="../data")
+pa("--datapath", type=str, default="drive/My Drive/CSCI544 Project/NLP Project/")
 pa("--ckptpath", type=str, default="../logs")
 pa("--logpath", type=str, default="../logs")
 pa("--tbpath", type=str, default="../logs", help='tensorboard path')
