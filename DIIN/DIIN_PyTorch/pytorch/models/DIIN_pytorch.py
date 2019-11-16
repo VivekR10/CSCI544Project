@@ -185,7 +185,7 @@ def highway_network(highway_network_linear, data_in, num_layers, bias, bias_star
         trans = linear(highway_network_linear, [data_in], d, bias, bias_start=bias_start, wd=wd, input_drop_prob=input_drop_prob, is_train = is_train)
         trans = F.relu(trans)
         gate = linear(highway_network_linear, [data_in], d, bias, bias_start=bias_start, wd=wd, input_drop_prob=input_drop_prob, is_train = is_train)
-        gate = F.sigmoid(gate)
+        gate = torch.sigmoid(gate)
         if d != data_in.size()[-1]:
             data_in = linear(highway_network_linear, [data_in], d, bias, bias_start=bias_start, wd=wd, input_drop_prob=input_drop_prob, is_train = is_train)
         out = gate * trans + (1 - gate) * data_in
@@ -238,12 +238,12 @@ def fuse_gate(fuse_gate_linear1, fuse_gate_linear2, fuse_gate_linear3, fuse_gate
         z = F.tanh(lhs_1 + rhs_1)
     lhs_2 = linear(fuse_gate_linear3, lhs, dim ,True, bias_start=0.0, squeeze=False, wd=config.wd, input_drop_prob=input_drop_prob, is_train=is_train)
     rhs_2 = linear(fuse_gate_linear4, rhs, dim ,True, bias_start=0.0, squeeze=False, wd=config.wd, input_drop_prob=input_drop_prob, is_train=is_train)
-    f = F.sigmoid(lhs_2 + rhs_2)
+    f = torch.sigmoid(lhs_2 + rhs_2)
 
     if config.two_gate_fuse_gate:
         lhs_3 = linear(fuse_gate_linear5, lhs, dim ,True, bias_start=0.0, squeeze=False, wd=config.wd, input_drop_prob=input_drop_prob, is_train=is_train)
         rhs_3 = linear(fuse_gate_linear6, rhs, dim ,True, bias_start=0.0, squeeze=False, wd=config.wd, input_drop_prob=input_drop_prob, is_train=is_train)
-        f2 = F.sigmoid(lhs_3 + rhs_3)
+        f2 = torch.sigmoid(lhs_3 + rhs_3)
         out = f * lhs + f2 * z
     else:   
         out = f * lhs + (1 - f) * z
