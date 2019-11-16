@@ -327,7 +327,7 @@ def softmax(logits, mask=None):
     if mask is not None:
         logits = exp_mask(logits, mask)
     flat_logits = flatten(logits, 1)
-    flat_out = F.softmax(flat_logits)
+    flat_out = F.softmax(flat_logits,dim=1)
     out = reconstruct(flat_out, logits, 1)
 
     return out
