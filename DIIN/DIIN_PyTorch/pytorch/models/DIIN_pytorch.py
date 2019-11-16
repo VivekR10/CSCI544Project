@@ -235,7 +235,7 @@ def fuse_gate(fuse_gate_linear1, fuse_gate_linear2, fuse_gate_linear3, fuse_gate
     if config.self_att_fuse_gate_residual_conn and config.self_att_fuse_gate_relu_z:
         z = F.relu(lhs_1 + rhs_1)
     else:
-        z = F.tanh(lhs_1 + rhs_1)
+        z = torch.tanh(lhs_1 + rhs_1)
     lhs_2 = linear(fuse_gate_linear3, lhs, dim ,True, bias_start=0.0, squeeze=False, wd=config.wd, input_drop_prob=input_drop_prob, is_train=is_train)
     rhs_2 = linear(fuse_gate_linear4, rhs, dim ,True, bias_start=0.0, squeeze=False, wd=config.wd, input_drop_prob=input_drop_prob, is_train=is_train)
     f = torch.sigmoid(lhs_2 + rhs_2)
