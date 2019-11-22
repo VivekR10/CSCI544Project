@@ -166,7 +166,7 @@ def load_mnli_shared_content():
     # shared_path = config.datapath + "/shared_2D_EM.json"
     # shared_path = config.datapath + "/shared_anto.json"
     # shared_path = config.datapath + "/shared_NER.json"
-    shared_path = "drive/My Drive/CSCI544 Project/NLP Project/shared.jsonl"
+    shared_path = "/home/nlpproject/CSCI544Project/DIIN/DIIN_PyTorch/shared.jsonl"
     # shared_path = "../shared.json"
     print(shared_path)
     if os.path.isfile(shared_path):
