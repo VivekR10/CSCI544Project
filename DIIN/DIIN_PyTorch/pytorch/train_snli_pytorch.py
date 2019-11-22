@@ -307,7 +307,7 @@ def train(model, loss_, optim, batch_size, config, train_snli, dev_snli):
             step += 1
 
             # Compute average loss
-            avg_cost += lossy.data[0] / (total_batch * batch_size)
+            avg_cost += lossy.item() / (total_batch * batch_size)
                             
         # Display some statistics about the epoch
         if epoch % display_epoch_freq == 0:
