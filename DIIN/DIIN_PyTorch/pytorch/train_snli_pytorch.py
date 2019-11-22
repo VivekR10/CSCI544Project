@@ -254,7 +254,7 @@ def train(model, loss_, optim, batch_size, config, train_snli, dev_snli):
 
                 lossy += diff_loss
             
-            logger.Log("loss{}".format(lossy.data[0])
+            logger.Log("loss{}".format(lossy.item()))
             lossy.backward()
             logger.Log("Finish backward{}".format(step))
             print("Finish backward{}".format(step))
