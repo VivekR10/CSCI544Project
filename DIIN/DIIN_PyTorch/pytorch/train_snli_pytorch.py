@@ -383,7 +383,7 @@ def classify(examples, completed, batch_size, model, loss_):
             minibatch_pre_pos, minibatch_hyp_pos, premise_char_vectors, hypothesis_char_vectors, \
             premise_exact_match, hypothesis_exact_match)
 
-        cost = loss_(logit, minibatch_labels).data[0]
+        cost = loss_(logit, minibatch_labels).item()
         costs += cost
 
         if config.cuda:
