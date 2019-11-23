@@ -201,6 +201,7 @@ def train(model, loss_, optim, batch_size, config, train_snli, dev_snli):
         completed = False 
 
         # Loop over all batches in epoch
+        logger.Log("total_batch %f" %(total_batch))
         for i in range(total_batch):
 
             # Assemble a minibatch of the next B examples
