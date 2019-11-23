@@ -284,9 +284,11 @@ def train(model, loss_, optim, batch_size, config, train_snli, dev_snli):
                     'best_prec1': dev_acc_snli,
                     'optimizer' : optim.state_dict(),
                     }, filename)
+                logger.Log("Model saved")
                 if config.training_completely_on_snli:
                     dev_acc_mat = dev_acc_snli
                 best_test = 100 * (1 - best_dev_mat / dev_acc_mat)
+                logger.Log("best_test: %f,%f,%f" %(best_test)%(best_dev_mat)%(dev_acc_mat))
                 if best_test > 0.04:
                     shutil.copyfile(filename, best_model_path)
                     best_dev_mat = dev_acc_mat
