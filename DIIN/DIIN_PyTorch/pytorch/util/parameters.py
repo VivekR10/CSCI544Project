@@ -62,7 +62,7 @@ pa("--dense_att_logit_func", type=str, default="tri_linear", help='logit functio
 
 pa("--self_att_logit_func", type=str, default="tri_linear", help='logit function')
 pa("--debug_model", action='store_true', help="debug model")
-pa("--batch_size", type=int, default=70, help="batch size") ####
+pa("--batch_size", type=int, default=50, help="batch size") ####
 pa("--display_step", type=int, default=50, help='display steps')
 pa("--eval_step", type=int, default=1000, help='eval step')
 pa("--l2_regularization_ratio", type=float, default=9e-5, help='l2 regularization ratio') ##
