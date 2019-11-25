@@ -325,7 +325,7 @@ def train(model, loss_, optim, batch_size, config, train_snli, dev_snli):
         progress = 1000 * (sum(last_train_acc)/(5 * min(last_train_acc)) - 1) 
 
         
-        if (progress < 0.1) or (step > best_step + early_stopping_step) or (epoch==12):
+        if (progress < 0.1) or (step > best_step + early_stopping_step) or (epoch==8):
             logger.Log("Best dev accuracy: %s" %(best_dev_mat))
             logger.Log("SNLI Train accuracy: %s" %(best_strain_acc))
             if config.training_completely_on_snli:
