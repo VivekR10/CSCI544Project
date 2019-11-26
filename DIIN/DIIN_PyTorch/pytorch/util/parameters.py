@@ -36,6 +36,7 @@ pa("model_name", type=str, default="demo_testing_SNLI", help="Give model name, t
 
 pa("--cuda", action='store_true', help="cuda")
 pa("--diff_loss", action='store_true', help="diff_loss")
+pa("--bert", action='store_true', help="cuda")
 
 pa("--datapath", type=str, default="/home/nlpproject/CSCI544Project/DIIN/DIIN_PyTorch")
 pa("--ckptpath", type=str, default="../logs")
