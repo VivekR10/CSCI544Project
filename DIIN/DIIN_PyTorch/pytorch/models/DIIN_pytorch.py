@@ -58,8 +58,10 @@ class DIIN(nn.Module):
         self.char_emb_init.weight.requires_grad = False
 
         if config.use_dense_net is True:
+            print("Using Dense Net")
             self.dense_net = DenseNet(134, config.dense_net_growth_rate, config.dense_net_transition_rate, config.dense_net_layers, config.dense_net_kernel_size)
         else:
+            print("Using Res Net")
             self.dense_net = ResNet([2,2,2,2])
     def dropout_rate_decay(self, global_step, decay_rate=0.997):
         p = 1 - 1 * decay_rate ** (global_step / 10000)
