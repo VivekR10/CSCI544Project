@@ -94,7 +94,7 @@ class DIIN(nn.Module):
             hp=lin(hp)
             premise_in = F.dropout(pr, p = self.dropout_rate,  training=self.training)
             hypothesis_in = F.dropout(hp, p = self.dropout_rate,  training=self.training)
-	else:	
+        else:	
             premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
             hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
         conv_pre, conv_hyp = self.char_emb(premise_char_vectors, hypothesis_char_vectors)
