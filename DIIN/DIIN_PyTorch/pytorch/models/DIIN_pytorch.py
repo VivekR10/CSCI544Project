@@ -9,6 +9,8 @@ import collections
 from util import blocks
 from util.general import flatten, reconstruct, exp_mask
 from .DenseNet import DenseNet
+import mxnet as mx
+from bert_embedding import BertEmbedding
 
 class DIIN(nn.Module):
     """Container module with an encoder, a recurrent module, and a decoder."""
@@ -49,11 +51,14 @@ class DIIN(nn.Module):
 
         self.final_linear = nn.Linear(5616, 3, bias=True)
         self.test_linear = nn.Linear(308736, 3, bias=True)
-
-        if embeddings is not None:
-            self.emb = nn.Embedding(embeddings.shape[0], embeddings.shape[1], padding_idx=0)
-            self.emb.weight.data.copy_(torch.from_numpy(embeddings).type('torch.LongTensor'))
-            self.emb.weight.requires_grad = True
+        if self.config.bert:
+	    ctx = mx.gpu(0)
+	    self.emb = BertEmbedding(ctx=ctx)
+	else:
+            if embeddings is not None:
+                self.emb = nn.Embedding(embeddings.shape[0], embeddings.shape[1], padding_idx=0)
+                self.emb.weight.data.copy_(torch.from_numpy(embeddings).type('torch.LongTensor'))
+                self.emb.weight.requires_grad = True
 
         self.char_emb_init = nn.Embedding(config.char_vocab_size, config.char_emb_size)
         self.char_emb_init.weight.requires_grad = False
@@ -64,14 +69,34 @@ class DIIN(nn.Module):
         p = 1 - 1 * decay_rate ** (global_step / 10000)
         self.dropout_rate = p
 
-    def forward(self, premise_x, hypothesis_x, \
+    def forward(self,config, premise_x, hypothesis_x, \
                 pre_pos, hyp_pos, premise_char_vectors, hypothesis_char_vectors, \
                 premise_exact_match, hypothesis_exact_match):
         prem_seq_lengths, prem_mask = blocks.length(premise_x)  # mask [N, L , 1]
         hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)
-        premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
-        hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
-
+        if self.config.bert:
+            sen = [" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in premise_x]
+            res = self.emb(sen)
+            pr = np.zeros((self.config.batch_size,self.config.sequence_length,768))
+            for i in range(len(res)):
+                x=np.array(res[i][1])
+                pr[i]=x.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
+            sen = [" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in hypothesis_x]
+            res = self.emb(sen)
+            hp = np.zeros((self.config.batch_size,self.config.sequence_length,768))
+            for i in range(len(res)):
+                x=np.array(res[i][1])
+                hp[i]=x.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
+            pr=torch.from_numpy(pr).type('torch.LongTensor')
+            hp=torch.from_numpy(hp).type('torch.LongTensor')
+            lin = nn.linear(768,300)
+            pr=lin(pr)
+            hp=lin(hp)
+            premise_in = F.dropout(pr, p = self.dropout_rate,  training=self.training)
+            hypothesis_in = F.dropout(hp, p = self.dropout_rate,  training=self.training)
+	else:	
+            premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
+            hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
         conv_pre, conv_hyp = self.char_emb(premise_char_vectors, hypothesis_char_vectors)
 
         premise_in = torch.cat([premise_in, conv_pre], 2) #[70, 48, 300], [70, 48, 100] --> [70,48,400]
