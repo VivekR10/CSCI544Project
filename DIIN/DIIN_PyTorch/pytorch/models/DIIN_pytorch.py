@@ -69,7 +69,7 @@ class DIIN(nn.Module):
         p = 1 - 1 * decay_rate ** (global_step / 10000)
         self.dropout_rate = p
 
-    def forward(self,config, premise_x, hypothesis_x, \
+    def forward(self, premise_x, hypothesis_x, \
                 pre_pos, hyp_pos, premise_char_vectors, hypothesis_char_vectors, \
                 premise_exact_match, hypothesis_exact_match):
         prem_seq_lengths, prem_mask = blocks.length(premise_x)  # mask [N, L , 1]
