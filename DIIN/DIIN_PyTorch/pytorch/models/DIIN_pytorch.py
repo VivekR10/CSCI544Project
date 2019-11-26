@@ -91,7 +91,7 @@ class DIIN(nn.Module):
             hp=torch.from_numpy(hp).type('torch.FloatTensor')
             lin = nn.Linear(768,300).cuda()
             pr=Variable(pr,requires_grad=True)
-            hp=Variable(hp,requires_grda=True)
+            hp=Variable(hp,requires_grad=True)
             pr=lin(pr.cuda())
             hp=lin(hp.cuda())
             premise_in = F.dropout(pr, p = self.dropout_rate,  training=self.training)
