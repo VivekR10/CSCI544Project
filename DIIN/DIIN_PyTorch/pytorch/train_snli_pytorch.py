@@ -92,7 +92,6 @@ def get_minibatch(dataset, start_index, end_index, training=False):
 
 
     premise_pad_crop_pair = hypothesis_pad_crop_pair = [(0,0)] * len(indices)
-    print([dataset[i]['sentence1_binary_parse_index_sequence'][:] for i in indices])
     premise_vectors = fill_feature_vector_with_cropping_or_padding([dataset[i]['sentence1_binary_parse_index_sequence'][:] for i in indices], premise_pad_crop_pair, 1)
     hypothesis_vectors = fill_feature_vector_with_cropping_or_padding([dataset[i]['sentence2_binary_parse_index_sequence'][:] for i in indices], hypothesis_pad_crop_pair, 1)
     premise_char_vectors = fill_feature_vector_with_cropping_or_padding([dataset[i]['sentence1_binary_parse_char_index'][:] for i in indices], premise_pad_crop_pair, 2, column_size=config.char_in_word_size)
