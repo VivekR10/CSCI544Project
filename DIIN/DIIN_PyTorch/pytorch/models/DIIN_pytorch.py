@@ -70,9 +70,13 @@ class DIIN(nn.Module):
         prem_seq_lengths, prem_mask = blocks.length(premise_x)  # mask [N, L , 1]
         hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)    	
         self.logger.Log(premise_x)
+        self.logger.Log(premise_x.shape())
         self.logger.Log(self.emb(premise_x))
+        self.logger.Log(self.emb(premise_x).shape())
         self.logger.Log(hypothesis_x)
+        self.logger.Log(hypothesis_x.shape())
         self.logger.Log(self.emb(hypothesis_x))
+        self.logger.Log(self.emb(hypothesis_x).shape())
         premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
         hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
 
