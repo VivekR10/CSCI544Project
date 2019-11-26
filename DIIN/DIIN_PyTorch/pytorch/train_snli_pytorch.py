@@ -83,6 +83,8 @@ if not config.bert:
         f = gzip.open(embedding_path, 'wb')
         pickle.dump(loaded_embeddings, f)
         f.close()
+else:
+    loaded_embeddings=None
 
 def get_minibatch(dataset, start_index, end_index, training=False):
     indices = range(start_index, end_index)
