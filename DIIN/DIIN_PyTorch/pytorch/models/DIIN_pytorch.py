@@ -107,6 +107,8 @@ class DIIN(nn.Module):
             fm = F.relu(fm)
 
         premise_final = self.dense_net(fm)
+        print("shape......................")
+        print(premise_final.shape)
 
         premise_final = premise_final.view(self.config.batch_size, -1)
         print("premise_final", premise_final.size())
