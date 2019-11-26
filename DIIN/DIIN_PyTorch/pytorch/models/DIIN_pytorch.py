@@ -89,7 +89,7 @@ class DIIN(nn.Module):
                 hp[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
             pr=torch.from_numpy(pr).type('torch.LongTensor')
             hp=torch.from_numpy(hp).type('torch.LongTensor')
-            lin = nn.linear(768,300)
+            lin = nn.Linear(768,300)
             pr=lin(pr)
             hp=lin(hp)
             premise_in = F.dropout(pr, p = self.dropout_rate,  training=self.training)
