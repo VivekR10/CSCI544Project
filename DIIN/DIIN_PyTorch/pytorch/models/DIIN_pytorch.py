@@ -52,9 +52,9 @@ class DIIN(nn.Module):
         self.final_linear = nn.Linear(5616, 3, bias=True)
         self.test_linear = nn.Linear(308736, 3, bias=True)
         if self.config.bert:
-	    ctx = mx.gpu(0)
-	    self.emb = BertEmbedding(ctx=ctx)
-	else:
+            ctx = mx.gpu(0)
+            self.emb = BertEmbedding(ctx=ctx)
+        else:
             if embeddings is not None:
                 self.emb = nn.Embedding(embeddings.shape[0], embeddings.shape[1], padding_idx=0)
                 self.emb.weight.data.copy_(torch.from_numpy(embeddings).type('torch.LongTensor'))
