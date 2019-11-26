@@ -71,7 +71,7 @@ class DIIN(nn.Module):
         hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)
         self.logger.Log(len(self.indices_to_words))
         self.logger.Log(type(premise_x[0][0]))
-        self.logger.Log([[self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"] for i in premise_x])
+        self.logger.Log([self.indices_to_words[val.item()]+" " for val in i if self.indices_to_words[val.item()]!="<PAD>" for i in premise_x])
         premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
         hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
 
