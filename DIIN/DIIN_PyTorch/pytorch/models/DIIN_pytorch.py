@@ -13,9 +13,9 @@ from .DenseNet import DenseNet
 class DIIN(nn.Module):
     """Container module with an encoder, a recurrent module, and a decoder."""
 
-    def __init__(self, logger, config, seq_length, emb_dim, hidden_dim, emb_train, embeddings = None, pred_size = 3, context_seq_len = None, query_seq_len = None, dropout_rate = 0.0):
+    def __init__(self, logger, config, seq_length, emb_dim, hidden_dim, emb_train, embeddings = None, pred_size = 3, context_seq_len = None, query_seq_len = None, dropout_rate = 0.0,indices_to_words):
         super(DIIN, self).__init__()
-
+        self.indices_to_words = indices_to_words
         self.logger=logger
         self.embedding_dim = emb_dim
         self.dim = hidden_dim
@@ -69,6 +69,7 @@ class DIIN(nn.Module):
                 premise_exact_match, hypothesis_exact_match):
         prem_seq_lengths, prem_mask = blocks.length(premise_x)  # mask [N, L , 1]
         hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)
+        self.logger.Log(len(self.indices_to_words))
         premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
         hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
 
