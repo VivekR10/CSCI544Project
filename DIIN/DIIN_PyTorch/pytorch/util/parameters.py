@@ -37,7 +37,7 @@ pa("model_name", type=str, default="demo_testing_SNLI", help="Give model name, t
 pa("--cuda", action='store_true', help="cuda")
 pa("--diff_loss", action='store_true', help="diff_loss")
 
-pa("--datapath", type=str, default="/home/nlpproject/CSCI544Project/DIIN/DIIN_PyTorch")
+pa("--datapath", type=str, default="/Users/vivek/Documents/CSCI 544/CSCI544Project/DIIN/DIIN_PyTorch/pytorch")
 pa("--ckptpath", type=str, default="../logs")
 pa("--logpath", type=str, default="../logs")
 pa("--tbpath", type=str, default="../logs", help='tensorboard path')
@@ -154,7 +154,7 @@ pa("--weight_l2loss_step_full_reg", type=int, default=100000, help='weight_l2los
 
 
 pa("--transitioning_conv_blocks", action='store_true', help='transitioning conv blocks')
-pa("--use_dense_net", action='store_false', help='use dense net') ##
+pa("--use_dense_net", action='store_true', help='use dense net') ##
 pa("--dense_net_growth_rate", type=int, default=20, help='dense net growth rate') ##
 pa("--first_transition_growth_rate", type=int, default=2, help='first_transition_growth_rate')
 pa("--dense_net_layers", type=int, default=8, help='dense net layers') ##
@@ -218,6 +218,7 @@ def load_parameters():
         "emb_train": args.emb_train,
         "alpha": args.alpha,
         "genre": args.genre
+        "use_dense_net": args.use_dense_net
     }
 
     return FIXED_PARAMETERS, args
