@@ -67,7 +67,7 @@ class DIIN(nn.Module):
                 premise_exact_match, hypothesis_exact_match):
         prem_seq_lengths, prem_mask = blocks.length(premise_x)  # mask [N, L , 1]
         hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)    	
-
+	logger.Log(premise_x,self.emb(premise_x),hypothesis_x,self.emb(hypothesis_x))
         premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
         hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
 
