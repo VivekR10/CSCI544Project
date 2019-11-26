@@ -69,9 +69,6 @@ class DIIN(nn.Module):
                 premise_exact_match, hypothesis_exact_match):
         prem_seq_lengths, prem_mask = blocks.length(premise_x)  # mask [N, L , 1]
         hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)
-        self.logger.Log(len(self.indices_to_words))
-        self.logger.Log(type(premise_x[0][0]))
-        self.logger.Log([" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in premise_x])
         premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
         hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
 
