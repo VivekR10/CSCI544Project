@@ -87,8 +87,8 @@ class DIIN(nn.Module):
             for i in range(len(res)):
                 x=np.array(res[i][1])
                 hp[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
-            pr=torch.from_numpy(pr).type('torch.LongTensor')
-            hp=torch.from_numpy(hp).type('torch.LongTensor')
+            pr=torch.from_numpy(pr).type('torch.FloatTensor')
+            hp=torch.from_numpy(hp).type('torch.FloatTensor')
             lin = nn.Linear(768,300)
             pr=lin(pr)
             hp=lin(hp)
