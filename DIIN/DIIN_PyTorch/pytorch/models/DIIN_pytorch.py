@@ -16,7 +16,7 @@ class DIIN(nn.Module):
     def __init__(self, logger, config, seq_length, emb_dim, hidden_dim, emb_train, embeddings = None, pred_size = 3, context_seq_len = None, query_seq_len = None, dropout_rate = 0.0):
         super(DIIN, self).__init__()
 
-	self.logger=logger
+        self.logger=logger
         self.embedding_dim = emb_dim
         self.dim = hidden_dim
         self.sequence_length = seq_length
