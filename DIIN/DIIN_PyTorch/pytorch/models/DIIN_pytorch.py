@@ -70,6 +70,7 @@ class DIIN(nn.Module):
         prem_seq_lengths, prem_mask = blocks.length(premise_x)  # mask [N, L , 1]
         hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)
         self.logger.Log(len(self.indices_to_words))
+        self.logger.Log([[self.indices_to_words[val] for val in i] for i in list(premise_x)]
         premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
         hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
 
@@ -107,9 +108,6 @@ class DIIN(nn.Module):
             fm = F.relu(fm)
 
         premise_final = self.dense_net(fm)
-        print("shape......................")
-        print(premise_final.shape)
-
         premise_final = premise_final.view(self.config.batch_size, -1)
         print("premise_final", premise_final.size())
         logits = linear(self.final_linear, [premise_final], self.pred_size ,True, bias_start=0.0, squeeze=False, wd=self.config.wd, input_drop_prob=self.config.keep_rate,
