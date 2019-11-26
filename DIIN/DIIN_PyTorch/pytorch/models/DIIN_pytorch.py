@@ -13,9 +13,10 @@ from .DenseNet import DenseNet
 class DIIN(nn.Module):
     """Container module with an encoder, a recurrent module, and a decoder."""
 
-    def __init__(self, config, seq_length, emb_dim, hidden_dim, emb_train, embeddings = None, pred_size = 3, context_seq_len = None, query_seq_len = None, dropout_rate = 0.0):
+    def __init__(self, logger, config, seq_length, emb_dim, hidden_dim, emb_train, embeddings = None, pred_size = 3, context_seq_len = None, query_seq_len = None, dropout_rate = 0.0):
         super(DIIN, self).__init__()
 
+	self.logger=logger
         self.embedding_dim = emb_dim
         self.dim = hidden_dim
         self.sequence_length = seq_length
@@ -24,6 +25,7 @@ class DIIN(nn.Module):
         self.query_seq_len = query_seq_len
         self.dropout_rate = dropout_rate
         self.config = config
+	
 
         self.char_emb_cnn = nn.Conv2d(8, 100, (1, 5), stride=(1, 1), padding=0, bias=True)
         self.interaction_cnn = nn.Conv2d(448, int(448 * config.dense_net_first_scale_down_ratio), config.first_scale_down_kernel, padding=0)
@@ -67,7 +69,7 @@ class DIIN(nn.Module):
                 premise_exact_match, hypothesis_exact_match):
         prem_seq_lengths, prem_mask = blocks.length(premise_x)  # mask [N, L , 1]
         hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)    	
-        logger.Log(premise_x,self.emb(premise_x),hypothesis_x,self.emb(hypothesis_x))
+        self.logger.Log(premise_x,self.emb(premise_x),hypothesis_x,self.emb(hypothesis_x))
         premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
         hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
 
