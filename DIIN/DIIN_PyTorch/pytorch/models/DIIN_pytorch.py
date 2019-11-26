@@ -13,7 +13,7 @@ from .DenseNet import DenseNet
 class DIIN(nn.Module):
     """Container module with an encoder, a recurrent module, and a decoder."""
 
-    def __init__(self, logger, config, seq_length, emb_dim, hidden_dim, emb_train, embeddings = None, pred_size = 3, context_seq_len = None, query_seq_len = None, dropout_rate = 0.0,indices_to_words):
+    def __init__(self, logger, indices_to_words, config, seq_length, emb_dim, hidden_dim, emb_train, embeddings = None, pred_size = 3, context_seq_len = None, query_seq_len = None, dropout_rate = 0.0):
         super(DIIN, self).__init__()
         self.indices_to_words = indices_to_words
         self.logger=logger
