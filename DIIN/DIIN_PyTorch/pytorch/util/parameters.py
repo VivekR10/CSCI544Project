@@ -217,7 +217,7 @@ def load_parameters():
         "learning_rate": args.learning_rate,
         "emb_train": args.emb_train,
         "alpha": args.alpha,
-        "genre": args.genre
+        "genre": args.genre,
         "use_dense_net": args.use_dense_net
     }
 
