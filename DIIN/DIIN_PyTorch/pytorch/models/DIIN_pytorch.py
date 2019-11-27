@@ -53,7 +53,7 @@ class DIIN(nn.Module):
         self.test_linear = nn.Linear(308736, 3, bias=True)
         if self.config.bert:
             ctx = mx.gpu(0)
-            self.emb = BertEmbedding(ctx=ctx,model='bert_24_1024_16',dataset_name='book_corpus_wiki_en_cased')
+            self.emb = BertEmbedding(ctx=ctx,dataset_name='book_corpus_wiki_en_cased')
         else:
             if embeddings is not None:
                 self.emb = nn.Embedding(embeddings.shape[0], embeddings.shape[1], padding_idx=0)
@@ -77,20 +77,20 @@ class DIIN(nn.Module):
         if self.config.bert:
             sen = [" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in premise_x]
             res = self.emb(sen)
-            pr = np.zeros((self.config.batch_size,self.sequence_length,1024))
+            pr = np.zeros((self.config.batch_size,self.sequence_length,768))
             for i in range(len(res)):
                 x=np.array(res[i][1])
-                pr[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),1024))),axis=0)
+                pr[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
             sen = [" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in hypothesis_x]
             res = self.emb(sen)
-            hp = np.zeros((self.config.batch_size,self.sequence_length,1024))
+            hp = np.zeros((self.config.batch_size,self.sequence_length,768))
             for i in range(len(res)):
                 x=np.array(res[i][1])
-                hp[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),1024))),axis=0)
+                hp[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
             pr=torch.from_numpy(pr).type('torch.FloatTensor')
             hp=torch.from_numpy(hp).type('torch.FloatTensor')
-            lin1 = nn.Linear(1024,300).cuda()
-            lin2 = nn.Linear(1024,300).cuda()
+            lin1 = nn.Linear(768,300).cuda()
+            lin2 = nn.Linear(768,300).cuda()
             pr=lin1(pr.cuda())
             hp=lin2(hp.cuda())
             premise_in = F.dropout(pr, p = self.dropout_rate,  training=self.training)
