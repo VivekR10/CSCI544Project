@@ -236,7 +236,7 @@ def train(model, loss_, optim, batch_size, config, train_snli, dev_snli):
             # cost function for logging
 
             model.dropout_rate_decay(step)
-            output = model(i,total_batch,epoch,minibatch_premise_vectors, minibatch_hypothesis_vectors, \
+            output = model(minibatch_premise_vectors, minibatch_hypothesis_vectors, \
                 minibatch_pre_pos, minibatch_hyp_pos, premise_char_vectors, hypothesis_char_vectors, \
                 premise_exact_match, hypothesis_exact_match)
             logger.Log("Finish forward")
