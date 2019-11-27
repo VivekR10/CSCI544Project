@@ -75,16 +75,18 @@ class DIIN(nn.Module):
         prem_seq_lengths, prem_mask = blocks.length(premise_x)  # mask [N, L , 1]
         hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)
         if self.config.bert:
-            sen = [" ".join([self.indices_to_words[val.item()] for val in i]) for i in premise_x]
+            sen = [" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in premise_x]
             res = self.emb(sen)
             pr = np.zeros((self.config.batch_size,self.sequence_length,768))
             for i in range(len(res)):
-                pr[i]=np.array(res[i][1])
-            sen = [" ".join([self.indices_to_words[val.item()] for val in i]) for i in hypothesis_x]
+                x=np.array(res[i][1])
+                pr[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
+            sen = [" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in hypothesis_x]
             res = self.emb(sen)
             hp = np.zeros((self.config.batch_size,self.sequence_length,768))
             for i in range(len(res)):
-                hp[i]=np.array(res[i][1])
+                x=np.array(res[i][1])
+                hp[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
             pr=torch.from_numpy(pr).type('torch.FloatTensor')
             hp=torch.from_numpy(hp).type('torch.FloatTensor')
             lin1 = nn.Linear(768,300).cuda()
