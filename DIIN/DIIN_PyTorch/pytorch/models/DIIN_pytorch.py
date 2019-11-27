@@ -77,13 +77,13 @@ class DIIN(nn.Module):
         if self.config.bert:
             sen = [" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in premise_x]
             res = self.emb(sen)
-            pr = np.zeros((self.config.batch_size,self.sequence_length,768))
+            pr = np.zeros((self.config.batch_size,self.sequence_length,1024))
             for i in range(len(res)):
                 x=np.array(res[i][1])
                 pr[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
             sen = [" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in hypothesis_x]
             res = self.emb(sen)
-            hp = np.zeros((self.config.batch_size,self.sequence_length,768))
+            hp = np.zeros((self.config.batch_size,self.sequence_length,1024))
             for i in range(len(res)):
                 x=np.array(res[i][1])
                 hp[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
