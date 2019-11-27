@@ -53,7 +53,7 @@ class DIIN(nn.Module):
         self.test_linear = nn.Linear(308736, 3, bias=True)
         if self.config.bert:
             ctx = mx.gpu(0)
-            self.emb = BertEmbedding(ctx=ctx)
+            self.emb = BertEmbedding(ctx=ctx,dataset_name='book_corpus_wiki_en_cased')
         else:
             if embeddings is not None:
                 self.emb = nn.Embedding(embeddings.shape[0], embeddings.shape[1], padding_idx=0)
