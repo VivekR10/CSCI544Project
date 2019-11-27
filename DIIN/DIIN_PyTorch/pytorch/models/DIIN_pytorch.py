@@ -81,18 +81,18 @@ class DIIN(nn.Module):
             for i in range(len(res)):
                 x=np.array(res[i][1])
                 pr[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
+                print(pr[i])
             sen = [" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in hypothesis_x]
             res = self.emb(sen)
             hp = np.zeros((self.config.batch_size,self.sequence_length,768))
             for i in range(len(res)):
                 x=np.array(res[i][1])
                 hp[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
+                print(hp[i])
             pr=torch.from_numpy(pr).type('torch.FloatTensor')
             hp=torch.from_numpy(hp).type('torch.FloatTensor')
             lin1 = nn.Linear(768,300).cuda()
             lin2 = nn.Linear(768,300).cuda()
-            pr=Variable(pr,requires_grad=False).cuda()
-            hp=Variable(hp,requires_grad=False).cuda()
             pr=lin1(pr.cuda())
             hp=lin2(hp.cuda())
             premise_in = F.dropout(pr, p = self.dropout_rate,  training=self.training)
