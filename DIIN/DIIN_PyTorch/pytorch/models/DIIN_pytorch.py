@@ -80,13 +80,13 @@ class DIIN(nn.Module):
             pr = np.zeros((self.config.batch_size,self.sequence_length,1024))
             for i in range(len(res)):
                 x=np.array(res[i][1])
-                pr[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
+                pr[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),1024))),axis=0)
             sen = [" ".join([self.indices_to_words[val.item()] for val in i if self.indices_to_words[val.item()]!="<PAD>"]) for i in hypothesis_x]
             res = self.emb(sen)
             hp = np.zeros((self.config.batch_size,self.sequence_length,1024))
             for i in range(len(res)):
                 x=np.array(res[i][1])
-                hp[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),768))),axis=0)
+                hp[i]=np.concatenate((x,np.zeros((self.sequence_length-len(res[i][1]),1024))),axis=0)
             pr=torch.from_numpy(pr).type('torch.FloatTensor')
             hp=torch.from_numpy(hp).type('torch.FloatTensor')
             lin1 = nn.Linear(1024,300).cuda()
