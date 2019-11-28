@@ -219,8 +219,8 @@ def load_parameters():
         "learning_rate": args.learning_rate,
         "emb_train": args.emb_train,
         "alpha": args.alpha,
-        "genre": args.genre
-    if not args.bert:
+        "genre": args.genre}
+    else:
         FIXED_PARAMETERS = {
             "model_type": args.model_type,
             "model_name": args.model_name,
