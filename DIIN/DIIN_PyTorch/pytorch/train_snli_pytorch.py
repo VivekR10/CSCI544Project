@@ -64,27 +64,24 @@ else:
     indices_to_words, word_indices, char_indices, indices_to_chars = sentences_to_padded_index_sequences([training_snli, dev_snli, test_snli])
 
 config.char_vocab_size = len(char_indices.keys())
-if not config.bert:
-    embedding_dir = os.path.join(config.datapath, "embeddings")
-    if not os.path.exists(embedding_dir):
-        os.makedirs(embedding_dir)
+embedding_dir = os.path.join(config.datapath, "embeddings")
+if not os.path.exists(embedding_dir):
+    os.makedirs(embedding_dir)
 
 
-    embedding_path = os.path.join(embedding_dir, "mnli_emb_snli_embedding.pkl.gz")
+embedding_path = os.path.join(embedding_dir, "mnli_emb_snli_embedding.pkl.gz")
 
-    print("embedding path exist")
-    print(os.path.exists(embedding_path))
-    if os.path.exists(embedding_path):
-        f = gzip.open(embedding_path, 'rb')
-        loaded_embeddings = pickle.load(f)
-        f.close()
-    else:
-        loaded_embeddings = loadEmbedding_rand(FIXED_PARAMETERS["embedding_data_path"], word_indices)
-        f = gzip.open(embedding_path, 'wb')
-        pickle.dump(loaded_embeddings, f)
-        f.close()
+print("embedding path exist")
+print(os.path.exists(embedding_path))
+if os.path.exists(embedding_path):
+    f = gzip.open(embedding_path, 'rb')
+    loaded_embeddings = pickle.load(f)
+    f.close()
 else:
-    loaded_embeddings=None
+    loaded_embeddings = loadEmbedding_rand(FIXED_PARAMETERS["embedding_data_path"], word_indices)
+    f = gzip.open(embedding_path, 'wb')
+    pickle.dump(loaded_embeddings, f)
+    f.close()
 
 def get_minibatch(dataset, start_index, end_index, training=False):
     indices = range(start_index, end_index)
