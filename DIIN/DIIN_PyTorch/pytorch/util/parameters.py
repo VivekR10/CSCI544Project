@@ -220,7 +220,7 @@ def load_parameters():
         "emb_train": args.emb_train,
         "alpha": args.alpha,
         "genre": args.genre
-    else:   
+    else:
         FIXED_PARAMETERS = {
             "model_type": args.model_type,
             "model_name": args.model_name,
