@@ -112,7 +112,7 @@ class DIIN(nn.Module):
         premise_final = self.dense_net(fm)
 
         premise_final = premise_final.view(self.config.batch_size, -1)
-        print("premise_final", premise_final.size())
+        #print("premise_final", premise_final.size())
         logits = linear(self.final_linear, [premise_final], self.pred_size ,True, bias_start=0.0, squeeze=False, wd=self.config.wd, input_drop_prob=self.config.keep_rate,
                                 is_train=self.training)
 
