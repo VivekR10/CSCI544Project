@@ -195,7 +195,8 @@ args = parser.parse_args()
 #args.model_name = "demo_testing_SNLI"
 
 def load_parameters():
-    FIXED_PARAMETERS = {
+    if args.bert:
+        FIXED_PARAMETERS = {
         "model_type": args.model_type,
         "model_name": args.model_name,
         "training_mnli": "{}/multinli_0.9/multinli_0.9_train.jsonl".format(args.datapath),
@@ -206,7 +207,7 @@ def load_parameters():
         "training_snli": "{}/snli_1.0/snli_1.0_train.jsonl".format(args.datapath),
         "dev_snli": "{}/snli_1.0/snli_1.0_dev.jsonl".format(args.datapath),
         "test_snli": "{}/snli_1.0/snli_1.0_test.jsonl".format(args.datapath),
-        "embedding_data_path": "{}/glove.840B.300d.txt".format(args.datapath),
+        "embedding_data_path": "{}/bert_300d.txt".format(args.datapath),
         "log_path": "{}/{}".format(args.logpath, args.model_name),
         "ckpt_path":  "{}/{}".format(args.ckptpath, args.model_name),
         "embeddings_to_load": args.emb_to_load,
@@ -219,6 +220,31 @@ def load_parameters():
         "emb_train": args.emb_train,
         "alpha": args.alpha,
         "genre": args.genre
+    else:   
+        FIXED_PARAMETERS = {
+            "model_type": args.model_type,
+            "model_name": args.model_name,
+            "training_mnli": "{}/multinli_0.9/multinli_0.9_train.jsonl".format(args.datapath),
+            "dev_matched": "{}/multinli_0.9/multinli_0.9_dev_matched.jsonl".format(args.datapath),
+            "dev_mismatched": "{}/multinli_0.9/multinli_0.9_dev_mismatched.jsonl".format(args.datapath),
+            "test_matched": "{}/multinli_0.9/multinli_0.9_test_matched_unlabeled.jsonl".format(args.datapath),
+            "test_mismatched": "{}/multinli_0.9/multinli_0.9_test_mismatched_unlabeled.jsonl".format(args.datapath),
+            "training_snli": "{}/snli_1.0/snli_1.0_train.jsonl".format(args.datapath),
+            "dev_snli": "{}/snli_1.0/snli_1.0_dev.jsonl".format(args.datapath),
+            "test_snli": "{}/snli_1.0/snli_1.0_test.jsonl".format(args.datapath),
+            "embedding_data_path": "{}/glove.840B.300d.txt".format(args.datapath),
+            "log_path": "{}/{}".format(args.logpath, args.model_name),
+            "ckpt_path":  "{}/{}".format(args.ckptpath, args.model_name),
+            "embeddings_to_load": args.emb_to_load,
+            "word_embedding_dim": 300,
+            "hidden_embedding_dim": 300,
+            "seq_length": args.seq_length,
+            "keep_rate": args.keep_rate, 
+            "batch_size": args.batch_size,
+            "learning_rate": args.learning_rate,
+            "emb_train": args.emb_train,
+            "alpha": args.alpha,
+            "genre": args.genre
     }
 
     return FIXED_PARAMETERS, args
