@@ -59,4 +59,5 @@ class DenseNet(nn.Module):
         out = self.trans1(self.dense1(x))
         out = self.trans2(self.dense2(out))
         out = self.trans3(self.dense3(out))
+
         return out

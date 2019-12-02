@@ -9,8 +9,12 @@ import collections
 from util import blocks
 from util.general import flatten, reconstruct, exp_mask
 from .DenseNet import DenseNet
+
+from .ResNet import ResNet
+
 import mxnet as mx
 from bert_embedding import BertEmbedding
+
 
 class DIIN(nn.Module):
     """Container module with an encoder, a recurrent module, and a decoder."""
@@ -59,8 +63,12 @@ class DIIN(nn.Module):
         self.char_emb_init = nn.Embedding(config.char_vocab_size, config.char_emb_size)
         self.char_emb_init.weight.requires_grad = False
 
-        self.dense_net = DenseNet(134, config.dense_net_growth_rate, config.dense_net_transition_rate, config.dense_net_layers, config.dense_net_kernel_size)
-
+        if config.use_dense_net is True:
+            print("Using Dense Net")
+            self.dense_net = DenseNet(134, config.dense_net_growth_rate, config.dense_net_transition_rate, config.dense_net_layers, config.dense_net_kernel_size)
+        else:
+            print("Using Res Net")
+            self.dense_net = ResNet([2,2,2,2])
     def dropout_rate_decay(self, global_step, decay_rate=0.997):
         p = 1 - 1 * decay_rate ** (global_step / 10000)
         self.dropout_rate = p
@@ -108,7 +116,7 @@ class DIIN(nn.Module):
 
         premise_final = self.dense_net(fm)
         premise_final = premise_final.view(self.config.batch_size, -1)
-        print("premise_final", premise_final.size())
+        #print("premise_final", premise_final.size())
         logits = linear(self.final_linear, [premise_final], self.pred_size ,True, bias_start=0.0, squeeze=False, wd=self.config.wd, input_drop_prob=self.config.keep_rate,
                                 is_train=self.training)
 

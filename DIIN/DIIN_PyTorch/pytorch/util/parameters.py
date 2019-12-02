@@ -155,7 +155,7 @@ pa("--weight_l2loss_step_full_reg", type=int, default=100000, help='weight_l2los
 
 
 pa("--transitioning_conv_blocks", action='store_true', help='transitioning conv blocks')
-pa("--use_dense_net", action='store_false', help='use dense net') ##
+pa("--use_dense_net", action='store_true', help='use dense net') ##
 pa("--dense_net_growth_rate", type=int, default=20, help='dense net growth rate') ##
 pa("--first_transition_growth_rate", type=int, default=2, help='first_transition_growth_rate')
 pa("--dense_net_layers", type=int, default=8, help='dense net layers') ##
@@ -219,6 +219,7 @@ def load_parameters():
         "learning_rate": args.learning_rate,
         "emb_train": args.emb_train,
         "alpha": args.alpha,
+        "use_dense_net": args.use_dense_net,
         "genre": args.genre}
     else:
         FIXED_PARAMETERS = {
@@ -244,7 +245,8 @@ def load_parameters():
             "learning_rate": args.learning_rate,
             "emb_train": args.emb_train,
             "alpha": args.alpha,
-            "genre": args.genre
+            "genre": args.genre,
+            "use_dense_net": args.use_dense_net
     }
 
     return FIXED_PARAMETERS, args
