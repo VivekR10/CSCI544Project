@@ -9,14 +9,20 @@ import collections
 from util import blocks
 from util.general import flatten, reconstruct, exp_mask
 from .DenseNet import DenseNet
+
 from .ResNet import ResNet
+
+import mxnet as mx
+from bert_embedding import BertEmbedding
+
 
 class DIIN(nn.Module):
     """Container module with an encoder, a recurrent module, and a decoder."""
 
-    def __init__(self, config, seq_length, emb_dim, hidden_dim, emb_train, embeddings = None, pred_size = 3, context_seq_len = None, query_seq_len = None, dropout_rate = 0.0):
+    def __init__(self, logger, indices_to_words, config, seq_length, emb_dim, hidden_dim, emb_train, embeddings = None, pred_size = 3, context_seq_len = None, query_seq_len = None, dropout_rate = 0.0):
         super(DIIN, self).__init__()
-
+        self.indices_to_words = indices_to_words
+        self.logger=logger
         self.embedding_dim = emb_dim
         self.dim = hidden_dim
         self.sequence_length = seq_length
@@ -25,6 +31,7 @@ class DIIN(nn.Module):
         self.query_seq_len = query_seq_len
         self.dropout_rate = dropout_rate
         self.config = config
+	
 
         self.char_emb_cnn = nn.Conv2d(8, 100, (1, 5), stride=(1, 1), padding=0, bias=True)
         self.interaction_cnn = nn.Conv2d(448, int(448 * config.dense_net_first_scale_down_ratio), config.first_scale_down_kernel, padding=0)
@@ -48,7 +55,6 @@ class DIIN(nn.Module):
 
         self.final_linear = nn.Linear(5616, 3, bias=True)
         self.test_linear = nn.Linear(308736, 3, bias=True)
-
         if embeddings is not None:
             self.emb = nn.Embedding(embeddings.shape[0], embeddings.shape[1], padding_idx=0)
             self.emb.weight.data.copy_(torch.from_numpy(embeddings).type('torch.LongTensor'))
@@ -71,11 +77,10 @@ class DIIN(nn.Module):
                 pre_pos, hyp_pos, premise_char_vectors, hypothesis_char_vectors, \
                 premise_exact_match, hypothesis_exact_match):
         prem_seq_lengths, prem_mask = blocks.length(premise_x)  # mask [N, L , 1]
-        hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)    	
-
+        hyp_seq_lengths, hyp_mask = blocks.length(hypothesis_x)
+  
         premise_in = F.dropout(self.emb(premise_x), p = self.dropout_rate,  training=self.training)
         hypothesis_in = F.dropout(self.emb(hypothesis_x), p = self.dropout_rate,  training=self.training)
-
         conv_pre, conv_hyp = self.char_emb(premise_char_vectors, hypothesis_char_vectors)
 
         premise_in = torch.cat([premise_in, conv_pre], 2) #[70, 48, 300], [70, 48, 100] --> [70,48,400]
@@ -110,7 +115,6 @@ class DIIN(nn.Module):
             fm = F.relu(fm)
 
         premise_final = self.dense_net(fm)
-
         premise_final = premise_final.view(self.config.batch_size, -1)
         #print("premise_final", premise_final.size())
         logits = linear(self.final_linear, [premise_final], self.pred_size ,True, bias_start=0.0, squeeze=False, wd=self.config.wd, input_drop_prob=self.config.keep_rate,

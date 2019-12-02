@@ -64,7 +64,6 @@ else:
     indices_to_words, word_indices, char_indices, indices_to_chars = sentences_to_padded_index_sequences([training_snli, dev_snli, test_snli])
 
 config.char_vocab_size = len(char_indices.keys())
-
 embedding_dir = os.path.join(config.datapath, "embeddings")
 if not os.path.exists(embedding_dir):
     os.makedirs(embedding_dir)
@@ -92,7 +91,6 @@ def get_minibatch(dataset, start_index, end_index, training=False):
 
 
     premise_pad_crop_pair = hypothesis_pad_crop_pair = [(0,0)] * len(indices)
-
     premise_vectors = fill_feature_vector_with_cropping_or_padding([dataset[i]['sentence1_binary_parse_index_sequence'][:] for i in indices], premise_pad_crop_pair, 1)
     hypothesis_vectors = fill_feature_vector_with_cropping_or_padding([dataset[i]['sentence2_binary_parse_index_sequence'][:] for i in indices], hypothesis_pad_crop_pair, 1)
     premise_char_vectors = fill_feature_vector_with_cropping_or_padding([dataset[i]['sentence1_binary_parse_char_index'][:] for i in indices], premise_pad_crop_pair, 2, column_size=config.char_in_word_size)
@@ -452,7 +450,7 @@ completed = False
 
 
 
-model = MyModel(config, FIXED_PARAMETERS["seq_length"], emb_dim=FIXED_PARAMETERS["word_embedding_dim"],  hidden_dim=FIXED_PARAMETERS["hidden_embedding_dim"], embeddings=loaded_embeddings, emb_train=FIXED_PARAMETERS["emb_train"])
+model = MyModel(logger,indices_to_words,config, FIXED_PARAMETERS["seq_length"], emb_dim=FIXED_PARAMETERS["word_embedding_dim"],  hidden_dim=FIXED_PARAMETERS["hidden_embedding_dim"], embeddings=loaded_embeddings, emb_train=FIXED_PARAMETERS["emb_train"])
 
 if config.cuda:
     model.cuda()
