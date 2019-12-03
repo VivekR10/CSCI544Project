@@ -12,8 +12,6 @@ from .DenseNet import DenseNet
 
 from .ResNet import ResNet
 
-import mxnet as mx
-from bert_embedding import BertEmbedding
 
 
 class DIIN(nn.Module):
