@@ -11,7 +11,7 @@ def conv1x1(in_planes, out_planes, stride=1):
     """1x1 convolution"""
     return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
 
-
+#BasicBlock is the DenseNet Block. Each block contains many laters inside of it
 class BasicBlock(nn.Module):
     expansion = 1
     __constants__ = ['downsample']
@@ -26,6 +26,7 @@ class BasicBlock(nn.Module):
         if dilation > 1:
             raise NotImplementedError("Dilation > 1 not supported in BasicBlock")
         # Both self.conv1 and self.downsample layers downsample the input when stride != 1
+        # Define all of the layers in a block: 3x3conv -> bn -> relu -> 2nd 3x3conv -> bn
         self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = norm_layer(planes)
         self.relu = nn.ReLU(inplace=True)
@@ -34,6 +35,7 @@ class BasicBlock(nn.Module):
         self.downsample = downsample
         self.stride = stride
 
+        # Forward function for the block showing how data will propogate 
     def forward(self, x):
         identity = x
 
@@ -52,7 +54,7 @@ class BasicBlock(nn.Module):
 
         return out
 
-
+#Bottleneck unit for efficiency
 class Bottleneck(nn.Module):
     expansion = 4
     __constants__ = ['downsample']
@@ -64,16 +66,20 @@ class Bottleneck(nn.Module):
             norm_layer = nn.BatchNorm2d
         width = int(planes * (base_width / 64.)) * groups
         # Both self.conv2 and self.downsample layers downsample the input when stride != 1
+
+        #replace 3x3 conv with 1x1 conv
         self.conv1 = conv1x1(inplanes, width)
         self.bn1 = norm_layer(width)
         self.conv2 = conv3x3(width, width, stride, groups, dilation)
         self.bn2 = norm_layer(width)
+        #replace 3x3 conv with 1x1 conv
         self.conv3 = conv1x1(width, planes * self.expansion)
         self.bn3 = norm_layer(planes * self.expansion)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.stride = stride
 
+    #Forward definition for bottleneck, same principle as BasicBlock
     def forward(self, x):
         identity = x
 
@@ -94,6 +100,7 @@ class Bottleneck(nn.Module):
         out += identity
         out = self.relu(out)
 
+        #Out will have the original input dimensions to the bottleneck
         return out
 
 
@@ -118,11 +125,15 @@ class ResNet(nn.Module):
                              "or a 3-element tuple, got {}".format(replace_stride_with_dilation))
         self.groups = groups
         self.base_width = width_per_group
+
+        # Convolve input to a 64 dimension layer
         self.conv1 = nn.Conv2d(134, self.inplanes, kernel_size=7, stride=2, padding=3,
                                bias=False)
         self.bn1 = norm_layer(self.inplanes)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
+        # Create 4 blocks, beginning with 64 dimensions going up to 512 dimensions
         self.layer1 = self._make_layer(block, 64, layers[0])
         self.layer2 = self._make_layer(block, 128, layers[1], stride=2,
                                        dilate=replace_stride_with_dilation[0])
@@ -130,7 +141,11 @@ class ResNet(nn.Module):
                                        dilate=replace_stride_with_dilation[1])
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2,
                                        dilate=replace_stride_with_dilation[2])
+
+        # Average pool the last block
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+
+        # FC layers for output
         self.fc = nn.Linear(512 * block.expansion, num_classes)
 
         for m in self.modules():
@@ -151,6 +166,8 @@ class ResNet(nn.Module):
                     nn.init.constant_(m.bn2.weight, 0)
 
     def _make_layer(self, block, planes, blocks, stride=1, dilate=False):
+        # Create a new block
+        # Start with a norm layer 
         norm_layer = self._norm_layer
         downsample = None
         previous_dilation = self.dilation
@@ -174,17 +191,23 @@ class ResNet(nn.Module):
 
         return nn.Sequential(*layers)
 
+    # Forward function for the entire Resnet 
     def _forward(self, x):
+
+        # Processing before it goes to the defined blocks
+        # Reduce to 64 dimensions, batch norm, relu and then max pool
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
         x = self.maxpool(x)
 
+        # Run through 4 blocks
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
 
+        #Average pool and then send to FC layer
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
         x = self.fc(x)
